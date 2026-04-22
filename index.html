@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster - Online Quiz Competition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landingPage" class="page active">
+        <div class="landing-container">
+            <div class="stars"></div>
+            <div class="landing-content">
+                <div class="landing-header">
+                    <h1 class="landing-title">
+                        <i class="fas fa-brain"></i> QuizMaster
+                    </h1>
+                    <p class="landing-subtitle">Test Your Knowledge, Challenge Your Mind</p>
+                </div>
+                
+                <div class="landing-features">
+                    <div class="feature-card">
+                        <i class="fas fa-rocket"></i>
+                        <h3>Lightning Fast</h3>
+                        <p>Quick rounds with real-time scoring</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-crown"></i>
+                        <h3>Competitive</h3>
+                        <p>Climb the leaderboard</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Educational</h3>
+                        <p>Learn while you play</p>
+                    </div>
+                </div>
+
+                <div class="cta-section">
+                    <button class="btn btn-primary btn-lg" onclick="goToUserSetup()">
+                        <i class="fas fa-play"></i> Start Quiz Now
+                    </button>
+                    <button class="btn btn-secondary btn-lg" onclick="goToLeaderboard()">
+                        <i class="fas fa-medal"></i> View Leaderboard
+                    </button>
+                </div>
+
+                <div class="theme-toggle">
+                    <button id="themeToggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Setup Page -->
+    <div id="userSetupPage" class="page">
+        <div class="setup-container">
+            <div class="setup-card">
+                <h2>Welcome to QuizMaster!</h2>
+                <p class="setup-subtitle">Let's get you started</p>
+
+                <!-- Username Input -->
+                <div class="form-group">
+                    <label for="username">Your Name</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="Enter your name"
+                        onkeypress="handleEnterKey(event)"
+                    >
+                </div>
+
+                <!-- Category Selection -->
+                <div class="form-group">
+                    <label for="category">Select Category</label>
+                    <select id="category">
+                        <option value="general">General Knowledge</option>
+                        <option value="science">Science</option>
+                        <option value="history">History</option>
+                        <option value="sports">Sports</option>
+                        <option value="geography">Geography</option>
+                    </select>
+                </div>
+
+                <!-- Difficulty Selection -->
+                <div class="form-group">
+                    <label for="difficulty">Choose Difficulty</label>
+                    <div class="difficulty-selector">
+                        <button class="difficulty-btn active" data-difficulty="easy" onclick="selectDifficulty('easy')">
+                            <i class="fas fa-feather"></i> Easy
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="medium" onclick="selectDifficulty('medium')">
+                            <i class="fas fa-star"></i> Medium
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="hard" onclick="selectDifficulty('hard')">
+                            <i class="fas fa-bolt"></i> Hard
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sound Toggle -->
+                <div class="form-group sound-toggle">
+                    <label for="soundToggle">
+                        <input type="checkbox" id="soundToggle" checked onchange="toggleSound()">
+                        <span>Enable Sound Effects</span>
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="goToLanding()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn btn-primary" onclick="startQuiz()" id="startQuizBtn">
+                        <i class="fas fa-arrow-right"></i> Start Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Page -->
+    <div id="quizPage" class="page">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <div class="quiz-info">
+                    <h2 id="quizCategoryTitle">Quiz</h2>
+                    <p id="userGreeting">Hello, Player!</p>
+                </div>
+                <div class="quiz-score">
+                    <span><i class="fas fa-star"></i> Score: <span id="currentScore">0</span></span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span id="questionCounter">Question 0 of 10</span>
+                    <span id="timerDisplay" class="timer-display">
+                        <i class="fas fa-hourglass-end"></i> <span id="timerCount">15</span>s
+                    </span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Question Section -->
+            <div class="question-section">
+                <div class="question-card">
+                    <h3 id="questionText" class="question-text">Question here</h3>
+                    <div id="optionsContainer" class="options-container">
+                        <!-- Options generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer Animation -->
+            <div id="timerCircle" class="timer-circle">
+                <svg class="timer-svg" width="100" height="100">
+                    <circle class="timer-track" cx="50" cy="50" r="45"></circle>
+                    <circle id="timerArc" class="timer-arc" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div class="timer-text" id="timerText">15</div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="quiz-navigation">
+                <button class="btn btn-secondary-small" onclick="quitQuiz()" title="Quit Quiz">
+                    <i class="fas fa-times"></i> Quit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Page -->
+    <div id="resultsPage" class="page">
+        <div class="results-container">
+            <div class="results-card">
+                <div id="confetti" class="confetti-container"></div>
+                
+                <div class="results-header">
+                    <h2>Quiz Complete!</h2>
+                    <div id="performanceBadge" class="performance-badge">
+                        <!-- Badge generated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="results-score">
+                    <div class="final-score">
+                        <span class="score-number" id="finalScore">0</span>
+                        <span class="score-label">/ 100</span>
+                    </div>
+                    <p id="performanceMessage" class="performance-message">Great job!</p>
+                </div>
+
+                <div class="results-summary">
+                    <div class="summary-item">
+                        <span><i class="fas fa-check"></i> Correct</span>
+                        <span id="correctAnswers" class="stat-value">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-times"></i> Incorrect</span>
+                        <span id="incorrectAnswers" class="stat-value">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-clock"></i> Time</span>
+                        <span id="totalTime" class="stat-value">0s</span>
+                    </div>
+                </div>
+
+                <!-- Review Answers -->
+                <div class="review-section">
+                    <h3>Review Your Answers</h3>
+                    <div id="reviewContainer" class="review-container">
+                        <!-- Answers review generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="goToLanding()">
+                        <i class="fas fa-home"></i> Home
+                    </button>
+                    <button class="btn btn-primary" onclick="restartQuiz()">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Page -->
+    <div id="leaderboardPage" class="page">
+        <div class="leaderboard-container">
+            <div class="leaderboard-card">
+                <div class="leaderboard-header">
+                    <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
+                    <p class="leaderboard-subtitle">Top Players</p>
+                </div>
+
+                <div class="category-filter">
+                    <select id="leaderboardCategory" onchange="updateLeaderboardDisplay()">
+                        <option value="all">All Categories</option>
+                        <option value="general">General Knowledge</option>
+                        <option value="science">Science</option>
+                        <option value="history">History</option>
+                        <option value="sports">Sports</option>
+                        <option value="geography">Geography</option>
+                    </select>
+                </div>
+
+                <div id="leaderboardList" class="leaderboard-list">
+                    <!-- Leaderboard entries generated by JavaScript -->
+                </div>
+
+                <button class="btn btn-secondary btn-block" onclick="goToLanding()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quit Confirmation Modal -->
+    <div id="quitModal" class="modal">
+        <div class="modal-content">
+            <h2>Are you sure?</h2>
+            <p>Do you want to quit the quiz? Your progress will not be saved.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeQuitModal()">Continue Quiz</button>
+                <button class="btn btn-danger" onclick="confirmQuit()">Quit Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="correctSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj==" type="audio/wav">
+    </audio>
+    <audio id="wrongSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBg==" type="audio/wav">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
